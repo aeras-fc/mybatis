@@ -19,8 +19,15 @@ public class MybatisRead_ALL {
 
 		// select contact all contacts
         selectAllStudents(session);  
+        //selecting by id.
 //		SelectStudent(1,session);
-		System.out.println("Records Read Successfully ");
+        
+        //update the entry.
+        update(session, 1);
+        
+        //To perform delete operation.
+        delete(session, 1);
+        
 		session.commit();
 		session.close(); // finite # of connections
 	}
@@ -29,6 +36,8 @@ public class MybatisRead_ALL {
 		Student student = session.selectOne("mybatis.Student.getById", id);
 		if(student != null)
 			System.out.println(student.getEmail());
+		
+		
 	}
 
 	private static void selectAllStudents(SqlSession session) {
@@ -42,5 +51,34 @@ public class MybatisRead_ALL {
 			System.out.println(st.getEmail());
 			System.out.println(st.getPhone());
 		}
+	}
+	
+	private static void update(SqlSession session, int id) {
+		  Student student = (Student) session.selectOne("mybatis.Student.getById", id);
+	      
+	      System.out.println("Current details of the student are: " );
+	      System.out.println(student.toString());  
+	      
+	      //Set new values to the mail and phone number of the student
+	      student.setEmail("mohamad131@gmail.com");
+	      student.setPhone(90000000);
+	      
+	      //Update the student record
+	      session.update("mybatis.Student.update",student);
+	      System.out.println("Record updated successfully");   
+	  
+		  
+	      //verifying the record 
+	      Student std = (Student) session.selectOne("mybatis.Student.getById", id);
+	      
+	      System.out.println("Details of the student after update operation" );
+	      System.out.println(std.toString());
+//	      System.out.println(std.getPhone());
+	}
+	
+	private static void delete(SqlSession session, int id) {
+	      session.delete("mybatis.Student.deleteById", id);    
+	      System.out.println("Record successfully deleted!");
+
 	}
 } 
